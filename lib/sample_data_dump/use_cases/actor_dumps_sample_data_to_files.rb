@@ -7,7 +7,7 @@ module SampleDataDump
         @persistence = persistence
       end
 
-      def execute
+      def result
         @persistence.load_table_configurations.fmap do |table_configurations|
           result = process_table_configurations_list(table_configurations)
           return result if result.failure?

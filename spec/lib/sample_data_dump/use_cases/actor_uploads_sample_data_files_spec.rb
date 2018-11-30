@@ -27,8 +27,8 @@ module SampleDataDump
         )
       end
 
-      describe '#execute' do
-        subject(:execute) { use_case.execute }
+      describe '#result' do
+        subject(:result) { use_case.result }
 
         before do
           expect(persistence)

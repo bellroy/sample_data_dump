@@ -28,8 +28,8 @@ module SampleDataDump
       end
       let(:table_configurations) { [table_configuration_one, table_configuration_two] }
 
-      describe '#execute' do
-        subject(:execute) { use_case.execute }
+      describe '#result' do
+        subject(:result) { use_case.result }
 
         before do
           expect(persistence)
