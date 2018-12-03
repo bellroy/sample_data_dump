@@ -26,6 +26,52 @@ SampleDataDump::Commands::DownloadCompressedDataDumps.new(local_file_system, s3_
 end
 ```
 
+Some useful source code for creating rake tasks:
+
+```
+namespace :sample_data do
+  desc 'dumps sample data to files'
+  task dump: :environment do
+    settings = SampleDataDump::Entities::Settings.new
+    local_file_system = SampleDataDump::Gateways::LocalFileSystem.new(settings)
+    data_store = MySampleDataDumpDataStore::Gateway.new(ActiveRecord::Base.connection, settings)
+    command = SampleDataDump::Commands::DumpSampleDataToFilesAndCompress.new(local_file_system, data_store)
+    result = command.result
+    puts result.failure if result.failure?
+  end
+
+  desc 'uploads compressed sample data files to storage'
+  task upload: :environment do
+    settings = SampleDataDump::Entities::Settings.new
+    local_file_system = SampleDataDump::Gateways::LocalFileSystem.new(settings)
+    compressed_dump_storage = MySampleDataRemoteStorage::Gateway.new(ActiveRecord::Base.connection, settings)
+    command = SampleDataDump::Commands::UploadCompressedSampleDataDumps.new(local_file_system, compressed_dump_storage)
+    result = command.result
+    puts result.failure if result.failure?
+  end
+
+  desc 'downloads sample data files from storage'
+  task download: :environment do
+    settings = SampleDataDump::Entities::Settings.new
+    local_file_system = SampleDataDump::Gateways::LocalFileSystem.new(settings)
+    compressed_dump_storage = MySampleDataRemoteStorage::Gateway.new(ActiveRecord::Base.connection, settings)
+    command = SampleDataDump::Commands::DownloadCompressedDataDumps.new(local_file_system, compressed_dump_storage)
+    result = command.result
+    puts result.failure if result.failure?
+  end
+
+  desc 'populates data store from downloaded sample data files'
+  task load: :environment do
+    settings = SampleDataDump::Entities::Settings.new
+    local_file_system = SampleDataDump::Gateways::LocalFileSystem.new(settings)
+    data_store = MySampleDataDumpDataStore::Gateway.new(ActiveRecord::Base.connection, settings)
+    command = SampleDataDump::Commands::DecompressAndLoadSampleDataDumps.new(local_file_system, data_store)
+    result = command.result
+    puts result.failure if result.failure?
+  end
+end
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
