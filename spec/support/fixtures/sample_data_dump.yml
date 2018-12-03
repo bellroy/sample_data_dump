@@ -1,0 +1,7 @@
+my_schema_name:
+  my_table_name:
+    dump_where: >
+      ('x' || md5(my_table_name.id))::bit(64)::bigint%421 = 0
+       and updated_at > current_date - interval '14 days')
+    obfuscate_columns:
+      - contact_given_name

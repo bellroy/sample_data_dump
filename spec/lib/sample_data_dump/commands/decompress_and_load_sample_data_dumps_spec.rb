@@ -2,15 +2,20 @@
 
 require 'dry/monads/all'
 require 'sample_data_dump/entities/table_configuration'
-require 'sample_data_dump/interfaces/persistence'
-require 'sample_data_dump/use_cases/actor_loads_sample_data_files'
+require 'sample_data_dump/interfaces/data_store_gateway'
+require 'sample_data_dump/interfaces/local_file_system_gateway'
+
+require 'sample_data_dump/commands/decompress_and_load_sample_data_dumps'
 
 module SampleDataDump
-  module UseCases
-    describe ActorLoadsSampleDataFiles do
-      let(:use_case) { described_class.new(persistence) }
+  module Commands
+    describe DecompressAndLoadSampleDataDumps do
+      let(:command) do
+        described_class.new(local_file_system_gateway, data_store_gateway)
+      end
 
-      let(:persistence) { instance_double(Interfaces::Persistence) }
+      let(:local_file_system_gateway) { instance_double(Interfaces::LocalFileSystemGateway) }
+      let(:data_store_gateway) { instance_double(Interfaces::DataStoreGateway) }
 
       let(:table_configuration_one) do
         instance_double(
@@ -29,31 +34,31 @@ module SampleDataDump
       let(:table_configurations) { [table_configuration_one, table_configuration_two] }
 
       describe '#result' do
-        subject(:result) { use_case.result }
+        subject(:result) { command.result }
 
         before do
-          expect(persistence)
+          expect(local_file_system_gateway)
             .to receive(:load_table_configurations)
             .and_return(Dry::Monads::Success(table_configurations))
 
           table_configurations.each do |table_configuration|
-            expect(persistence)
+            expect(data_store_gateway)
               .to receive(:wipe_table)
               .with(table_configuration)
 
-            expect(persistence)
+            expect(data_store_gateway)
               .to receive(:valid?)
               .with(table_configuration)
               .and_return(Dry::Monads::Success(true))
-            expect(persistence)
+            expect(local_file_system_gateway)
               .to receive(:decompress_compressed_dump_file)
               .with(table_configuration)
               .and_return(Dry::Monads::Success(true))
-            expect(persistence)
+            expect(data_store_gateway)
               .to receive(:load_dump_file)
               .with(table_configuration)
               .and_return(Dry::Monads::Success(true))
-            expect(persistence)
+            expect(data_store_gateway)
               .to receive(:reset_sequence)
               .with(table_configuration)
               .and_return(Dry::Monads::Success(true))

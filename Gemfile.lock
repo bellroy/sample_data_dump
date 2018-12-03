@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sample_data_dump (0.0.1)
+    sample_data_dump (0.0.2)
       dry-matcher
       dry-monads
       dry-struct
