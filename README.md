@@ -12,7 +12,7 @@ This gem provides:
 4. Pass the gateways and settings to the appropriate command.
 5. Use the result to take your next action.
 
-```
+```ruby
 settings = SampleDataDump::Settings.new(
   compacted_dump_directory: '/tmp/compacted_dumps',
   config_file_path: 'config/sample_data_dump.yml'
@@ -28,7 +28,7 @@ end
 
 Some useful source code for creating rake tasks:
 
-```
+```ruby
 namespace :sample_data do
   desc 'dumps sample data to files'
   task dump: :environment do
