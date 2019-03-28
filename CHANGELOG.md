@@ -1,3 +1,7 @@
+0.0.3
+
+  * Dependency updates
+
 0.0.2
 
   * Split all I/O across multiple gateways based on data type
