@@ -9,7 +9,7 @@ module SampleDataDump
       attribute :schema_name, Types::Strict::String
       attribute :table_name, Types::Strict::String
       attribute :dump_where, Types::Strict::String.default('')
-      attribute :obfuscate_columns, Types::Strict::Array.of(Types::Strict::String).default([])
+      attribute :obfuscate_columns, Types::Strict::Array.of(Types::Strict::String).default([].freeze)
 
       def qualified_table_name
         "#{schema_name}.#{table_name}"
