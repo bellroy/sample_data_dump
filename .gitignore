@@ -1,3 +1,4 @@
 compacted_dump/
 coverage/
 .rspec_status
+/Gemfile.lock
