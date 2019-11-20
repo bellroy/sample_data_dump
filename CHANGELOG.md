@@ -1,3 +1,7 @@
+0.0.4
+
+  * More dependency updates
+
 0.0.3
 
   * Dependency updates
